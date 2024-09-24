@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.aydinkaya.saporiveloce"
-        minSdk = 34
+        minSdk = 27
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -36,6 +36,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -51,6 +52,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 
 }
 
@@ -85,5 +87,12 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.6.0")
     implementation("com.google.code.gson:gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation (libs.ui)
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+
+
+
 }
 

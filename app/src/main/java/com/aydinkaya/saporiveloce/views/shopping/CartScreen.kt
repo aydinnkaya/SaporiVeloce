@@ -29,7 +29,7 @@ fun CartScreen(viewModel: YemekViewModel = hiltViewModel()) {
         ) {
             if (cartItems.isNotEmpty()) {
                 CartItemList(cartItems = cartItems, onRemoveItem = { item ->
-                    viewModel.sepettenYemekSil(item.sepet_yemek_id, "kasim_adalan")
+                    viewModel.sepettenYemekSil(item.sepet_yemek_id, "Aydin")
                 })
             } else {
                 Text("Sepetiniz boş.", style = MaterialTheme.typography.titleLarge)

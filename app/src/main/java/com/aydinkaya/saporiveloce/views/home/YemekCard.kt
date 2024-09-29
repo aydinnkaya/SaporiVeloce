@@ -36,8 +36,7 @@ fun YemekCard(
             .width(240.dp)
             .padding(8.dp)
             .clickable {
-                navController.navigate("productDetail/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}")
-            },
+                navController.navigate("productDetail/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}/${yemek.yemek_aciklama}")             },
         colors = CardDefaults.cardColors(cardBackgroundColor),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)

@@ -23,18 +23,20 @@ fun NavigationStack() {
         }
 
         composable(
-            "productDetail/{yemekId}/{yemekAdi}/{yemekFiyat}/{yemekResimAdi}",
+            "productDetail/{yemekId}/{yemekAdi}/{yemekFiyat}/{yemekResimAdi}/{yemekAciklama}",
             arguments = listOf(
                 navArgument("yemekId") { type = NavType.IntType },
                 navArgument("yemekAdi") { type = NavType.StringType },
                 navArgument("yemekFiyat") { type = NavType.StringType },
-                navArgument("yemekResimAdi") { type = NavType.StringType }
+                navArgument("yemekResimAdi") { type = NavType.StringType },
+                navArgument("yemekAciklama") { type = NavType.StringType }
             )
         ) { backStackEntry ->
             val yemekId = backStackEntry.arguments?.getInt("yemekId") ?: 0
             val yemekAdi = backStackEntry.arguments?.getString("yemekAdi") ?: ""
             val yemekFiyat = backStackEntry.arguments?.getString("yemekFiyat") ?: ""
             val yemekResimAdi = backStackEntry.arguments?.getString("yemekResimAdi") ?: ""
+            val yemekAciklama = backStackEntry.arguments?.getString("yemekAciklama") ?: "" // Yeni eklenen açıklama
 
             ProductDetailScreen(
                 navController = navController,
@@ -42,6 +44,7 @@ fun NavigationStack() {
                 yemekAdi = yemekAdi,
                 yemekFiyat = yemekFiyat,
                 yemekResimAdi = yemekResimAdi,
+                yemekAciklama = yemekAciklama,  // Açıklamayı da ekliyoruz
                 onBackPress = {
                     navController.popBackStack()
                 }
@@ -49,4 +52,3 @@ fun NavigationStack() {
         }
     }
 }
-

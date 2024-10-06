@@ -1,5 +1,10 @@
 package com.aydinkaya.saporiveloce.data.entity
 
+import com.google.gson.annotations.SerializedName
+
 data class YemekResponse(
-    val yemekler: List<Yemek>
+    @SerializedName("yemekler")
+    val yemekler: List<Yemek>,
+    @SerializedName("success")
+    val success: Int
 )

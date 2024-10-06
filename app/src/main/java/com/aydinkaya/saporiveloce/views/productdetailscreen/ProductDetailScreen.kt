@@ -92,7 +92,7 @@ fun ProductDetailScreen(
                 }
 
                 IconButton(
-                    onClick = { navController.navigate("cart") },
+                    onClick = {  },
                     modifier = Modifier
                         .size(60.dp)
                         .clip(RoundedCornerShape(50))
@@ -132,8 +132,6 @@ fun ProductDetailScreen(
 
 
             Spacer(modifier = Modifier.height(4.dp))
-
-            // Puan ve ürün bilgisi kısmı
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -150,7 +148,7 @@ fun ProductDetailScreen(
                 ) {
                     Text(
                         text = "5.0",
-                        color = Color.Black,
+                        color = Color.White,
                         style = MaterialTheme.typography.titleMedium
                     )
 
@@ -162,7 +160,7 @@ fun ProductDetailScreen(
                         )
 
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "275", color = Color.Black)
+                        Text(text = "275", color = Color.White)
                     }
                 }
 
@@ -175,7 +173,7 @@ fun ProductDetailScreen(
                     ) {
                         Text(
                             text = yemekAdi,
-                            color = Color.Black,
+                            color = Color.White,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
@@ -185,7 +183,7 @@ fun ProductDetailScreen(
 
                         Text(
                             text = yemekAciklama,
-                            color = Color.Black,
+                            color = Color.White,
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 14.sp
                             )
@@ -211,7 +209,7 @@ fun ProductDetailScreen(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                    Text(text = "1", color = Color.Black)
+                    Text(text = "1", color = Color.White)
                     IconButton(onClick = { /* Miktar artır */ }) {
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -223,7 +221,7 @@ fun ProductDetailScreen(
 
                 Text(
                     text = "₺$yemekFiyat",
-                    color = Color.Black,
+                    color = Color.White,
                     style = MaterialTheme.typography.titleMedium
                 )
             }

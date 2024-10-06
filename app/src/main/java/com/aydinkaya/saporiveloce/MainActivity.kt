@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.aydinkaya.saporiveloce.ui.theme.SaporiVeloceTheme
-import com.aydinkaya.saporiveloce.views.home.NavigationStack
+import com.aydinkaya.saporiveloce.views.bottomnavigationbar.NavigationStack
 import dagger.hilt.android.AndroidEntryPoint
 
 

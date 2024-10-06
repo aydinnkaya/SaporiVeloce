@@ -12,7 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.aydinkaya.saporiveloce.data.entity.SepetYemek
 
@@ -22,40 +27,31 @@ fun CartItemCard(sepetYemek: SepetYemek, onRemoveItem: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+            .padding(8.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = rememberAsyncImagePainter("http://kasimadalan.pe.hu/yemekler/resimler/${sepetYemek.yemek_resim_adi}"),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                contentDescription = sepetYemek.yemek_adi,
+                modifier = Modifier.size(64.dp)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(sepetYemek.yemek_adi, style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("Fiyat: ₺${sepetYemek.yemek_fiyat}", style = MaterialTheme.typography.bodyMedium)
-                Text("Adet: ${sepetYemek.yemek_siparis_adet}", style = MaterialTheme.typography.bodyMedium)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = sepetYemek.yemek_adi, fontWeight = FontWeight.Bold)
+                Text(text = "${sepetYemek.yemek_fiyat}₺ x ${sepetYemek.yemek_siparis_adet}")
             }
 
             IconButton(onClick = onRemoveItem) {
-                Icon(Icons.Default.Delete, contentDescription = "Remove item")
+                Icon(Icons.Default.Delete, contentDescription = "Remove")
             }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Text("₺${sepetYemek.yemek_fiyat * sepetYemek.yemek_siparis_adet}")
         }
     }
 }
-

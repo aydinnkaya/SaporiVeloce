@@ -1,5 +1,6 @@
 package com.aydinkaya.saporiveloce.retrofit
 
+/*
 class ApiUtils {
     companion object {
         const val BASE_URL = "http://kasimadalan.pe.hu/yemekler/"
@@ -9,3 +10,5 @@ class ApiUtils {
         }
     }
 }
+
+ */

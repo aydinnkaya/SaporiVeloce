@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,18 +31,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aydinkaya.saporiveloce.R
+import com.aydinkaya.saporiveloce.data.entity.Yemek
 import com.aydinkaya.saporiveloce.viewmodel.FoodCardData
 import com.aydinkaya.saporiveloce.viewmodel.HomeScreenViewModel
+import com.aydinkaya.saporiveloce.viewmodel.YemekViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = viewModel()) {
+fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = hiltViewModel(), yemekViewModel: YemekViewModel = hiltViewModel()   ) {
     val foodCards by viewModel.foodCards.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val foodItems by viewModel.foodItems.collectAsState()
     val restaurants by viewModel.restaurants.collectAsState()
+    val yemekList by yemekViewModel.yemekListesi.observeAsState(emptyList())
 
     LazyColumn(
         modifier = Modifier
@@ -80,7 +86,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = vi
         }
 
         item {
-            YemekListScreen(navController)
+            YemekListScreen(navController = navController, yemekList = yemekList, viewModel = yemekViewModel)
         }
 
         /*
@@ -231,7 +237,7 @@ fun RestaurantCard(restaurant: String) {
     Card(
         modifier = Modifier
             .size(120.dp)
-            .clickable {  }
+            .clickable { }
     ) {
         Column {
             Image(painter = painterResource(id = R.drawable.sandwich), contentDescription = restaurant)

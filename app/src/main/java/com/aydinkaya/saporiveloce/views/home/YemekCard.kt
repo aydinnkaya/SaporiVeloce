@@ -21,22 +21,32 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.foundation.clickable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavController
+import com.aydinkaya.saporiveloce.viewmodel.YemekViewModel
+import com.aydinkaya.saporiveloce.data.entity.SepetYemek
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 @Composable
 fun YemekCard(
     yemek: Yemek,
-    onSepeteEkle: () -> Unit,
-    navController: NavController  // NavController parametresi ekleniyor
+    navController: NavController,
+    viewModel: YemekViewModel
 ) {
     val cardBackgroundColor = Color.White
+    val yemekAciklama = viewModel.yemekAciklamasiniGetir(yemek.yemek_id)
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Card(
         modifier = Modifier
             .width(240.dp)
             .padding(8.dp)
             .clickable {
-                navController.navigate("productDetail/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}/${yemek.yemek_aciklama}")             },
+                navController.navigate("productDetail/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}/$yemekAciklama")
+            },
         colors = CardDefaults.cardColors(cardBackgroundColor),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
@@ -99,7 +109,24 @@ fun YemekCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
-                onClick = onSepeteEkle,
+                onClick = {
+                    val sepetYemek = SepetYemek(
+                        sepet_yemek_id = 0,
+                        yemek_adi = yemek.yemek_adi,
+                        yemek_resim_adi = yemek.yemek_resim_adi,
+                        yemek_fiyat = yemek.yemek_fiyat,
+                        yemek_siparis_adet = 1,
+                        kullanici_adi = "current_user"
+                    )
+                    viewModel.sepeteYemekEkle(sepetYemek) // Pass sepetYemek to the ViewModel
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        snackbarHostState.showSnackbar(
+                            message = "${yemek.yemek_adi} added to cart",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFFF9800)
                 ),
@@ -110,4 +137,5 @@ fun YemekCard(
             }
         }
     }
+    SnackbarHost(hostState = snackbarHostState)
 }

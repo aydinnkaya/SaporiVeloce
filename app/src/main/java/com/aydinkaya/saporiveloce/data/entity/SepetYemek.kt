@@ -8,3 +8,4 @@ data class SepetYemek(
     val yemek_siparis_adet: Int,
     val kullanici_adi: String
 )
+

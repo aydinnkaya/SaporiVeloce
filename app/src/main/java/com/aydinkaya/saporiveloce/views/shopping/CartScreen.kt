@@ -1,8 +1,11 @@
 package com.aydinkaya.saporiveloce.views.shopping
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -28,17 +31,24 @@ import com.aydinkaya.saporiveloce.viewmodel.YemekViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartScreen(navController: NavController,
-               viewModel: YemekViewModel = hiltViewModel()) {
+fun CartScreen(
+    navController: NavController,
+    viewModel: YemekViewModel = hiltViewModel()
+) {
     val cartItems by viewModel.cartItems.observeAsState(emptyList())
-    val totalPrice = viewModel.toplamFiyat()
+    val totalPrice by remember { derivedStateOf { viewModel.toplamFiyat() } }
+
+    Log.d("CartScreen", "Sepet verileri güncelleniyor: ${cartItems.size} öğe mevcut.")
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = "Checkout", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        Log.d("Navigation", "Geri butonuna basıldı.")
+                        navController.popBackStack()
+                    }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
                     }
                 },
@@ -61,19 +71,24 @@ fun CartScreen(navController: NavController,
                     .padding(padding)
                     .padding(16.dp)
             ) {
-                if (cartItems.isEmpty()) {
-                    Text(text = "Your cart is empty", fontWeight = FontWeight.Bold)
-                } else {
-                    cartItems.forEach { cartItem ->
-                        CartItem(
-                            imageRes = cartItem.yemek_resim_adi,
-                            title = cartItem.yemek_adi,
-                            price = cartItem.yemek_fiyat,
-                            quantity = cartItem.yemek_siparis_adet,
-                            onQuantityChange = { newQuantity ->
-                                viewModel.updateCartQuantity(cartItem, newQuantity)
-                            }
-                        )
+
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        items(cartItems) { cartItem ->
+                            Log.d("CartScreen", "Sepet Öğesi: ${cartItem.yemek_adi}, Miktar: ${cartItem.yemek_siparis_adet}")
+                            CartItem(
+                                imageRes = cartItem.yemek_resim_adi,
+                                title = cartItem.yemek_adi,
+                                price = cartItem.yemek_fiyat,
+                                quantity = cartItem.yemek_siparis_adet,
+                                onQuantityChange = { newQuantity ->
+                                    viewModel.updateCartQuantity(cartItem, newQuantity)
+                                    Log.d("CartScreen", "${cartItem.yemek_adi} miktarı güncellendi: $newQuantity")
+                                }
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -85,6 +100,7 @@ fun CartScreen(navController: NavController,
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = "Total", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         Text(text = "$${totalPrice}", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Log.d("CartScreen", "Toplam fiyat: $totalPrice")
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -94,7 +110,7 @@ fun CartScreen(navController: NavController,
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
-                        onClick = { },
+                        onClick = { Log.d("CartScreen", "Checkout butonuna basıldı.") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
@@ -103,10 +119,9 @@ fun CartScreen(navController: NavController,
                     }
                 }
             }
-        }
+
     )
 }
-
 
 @Composable
 fun CartItem(imageRes: String, title: String, price: Int, quantity: Int, onQuantityChange: (Int) -> Unit) {

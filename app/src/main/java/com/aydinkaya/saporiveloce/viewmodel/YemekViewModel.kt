@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
+import android.util.Log
 
 @HiltViewModel
 open class YemekViewModel @Inject constructor(private val repository: YemekRepository) : ViewModel() {
@@ -20,8 +20,8 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
     private val _yemekListesi = MutableLiveData<List<Yemek>>(emptyList())
     val yemekListesi: LiveData<List<Yemek>> get() = _yemekListesi
 
-    private val _sepetYemekler = MutableLiveData<List<SepetYemek>>(emptyList())
-    val sepetYemekler: LiveData<List<SepetYemek>> get() = _sepetYemekler
+    private val _cartItems = MutableLiveData<List<SepetYemek>>(emptyList())
+    val cartItems: LiveData<List<SepetYemek>> get() = _cartItems
 
     private val _toplamFiyat = MutableLiveData<Double>(0.0)
     val toplamFiyat: LiveData<Double> get() = _toplamFiyat
@@ -38,12 +38,9 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
     private val _yemekAciklama = MutableLiveData<String?>()
     val yemekAciklama: LiveData<String?> get() = _yemekAciklama
 
-    private val _cartItems = MutableLiveData<List<SepetYemek>>(emptyList())
-    val cartItems: LiveData<List<SepetYemek>> get() = _cartItems
-
     init {
         yemekleriGetir()
-        sepetYemekleriniGetir()
+        tumSepetYemekleriniGetir() // Sepeti başlangıçta yüklüyoruz
     }
 
     fun sepeteYemekEkle(yemek: SepetYemek) {
@@ -54,33 +51,45 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
             val updatedItem = existingItem.copy(yemek_siparis_adet = existingItem.yemek_siparis_adet + 1)
             currentCartItems[currentCartItems.indexOf(existingItem)] = updatedItem
         } else {
-            currentCartItems.add(
-                SepetYemek(
-                    sepet_yemek_id = 0,
-                    yemek_adi = yemek.yemek_adi,
-                    yemek_resim_adi = yemek.yemek_resim_adi,
-                    yemek_fiyat = yemek.yemek_fiyat,
-                    yemek_siparis_adet = 1,
-                    kullanici_adi = "current_user"
-                )
-            )
+            currentCartItems.add(yemek)
         }
 
         _cartItems.value = currentCartItems
+        Log.d("YemekViewModel", "Sepet güncellendi: ${_cartItems.value?.size} öğe var.")
 
-        viewModelScope.launch(Dispatchers.IO) {  // API çağrısı arka planda yapılır
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = repository.sepeteYemekEkle(yemek)
-                withContext(Dispatchers.Main) {  // UI güncellemesi ana iş parçacığında yapılır
+                withContext(Dispatchers.Main) {
                     if (response.success == 1) {
-                        // Başarıyla sepete eklendi
+                        Log.d("API", "Yemek başarıyla sepete eklendi: ${yemek.yemek_adi}")
+                        tumSepetYemekleriniGetir() // Sepet güncelleme
                     } else {
                         _hataMesaji.value = "Yemek sepete eklenemedi."
+                        Log.e("API", "Yemek sepete eklenemedi: ${response.message}")
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     _hataMesaji.value = "Sepete ekleme sırasında hata oluştu: ${e.message}"
+                    Log.e("API", "Sepete ekleme sırasında hata: ${e.message}")
+                }
+            }
+        }
+    }
+
+    fun tumSepetYemekleriniGetir() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val sepetYemekler = repository.tumSepetYemekleriGetir()
+                withContext(Dispatchers.Main) {
+                    _cartItems.value = sepetYemekler
+                    Log.d("YemekViewModel", "Sepet verileri güncellendi: ${sepetYemekler.size} öğe var.")
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    _hataMesaji.value = "Sepet yüklenemedi: ${e.message}"
+                    Log.e("YemekViewModel", "Sepet yüklenemedi: ${e.message}")
                 }
             }
         }
@@ -109,28 +118,7 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
                 withContext(Dispatchers.Main) {
                     _yemekListesi.value = emptyList()
                     _hataMesaji.value = "Yemekler yüklenemedi: ${e.message}"
-                }
-            } finally {
-                withContext(Dispatchers.Main) {
-                    _yukleniyor.value = false
-                }
-            }
-        }
-    }
-
-    private fun sepetYemekleriniGetir() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _yukleniyor.postValue(true)
-            try {
-                val sepetYemekler = repository.tumSepetYemekleriGetir()
-                withContext(Dispatchers.Main) {
-                    _sepetYemekler.value = sepetYemekler
-                    _toplamFiyat.value = sepetYemekler.sumOf { it.yemek_fiyat.toDouble() * it.yemek_siparis_adet }
-                    _toplamUrunSayisi.value = sepetYemekler.sumOf { it.yemek_siparis_adet }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    _hataMesaji.value = "Sepet yüklenemedi: ${e.message}"
+                    Log.e("API", "Yemekler yüklenemedi: ${e.message}")
                 }
             } finally {
                 withContext(Dispatchers.Main) {
@@ -146,14 +134,17 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
                 val response = repository.sepettenYemekSil(sepetYemek.sepet_yemek_id, sepetYemek.kullanici_adi)
                 withContext(Dispatchers.Main) {
                     if (response.success == 1) {
-                        sepetYemekleriniGetir()
+                        tumSepetYemekleriniGetir() // Silindikten sonra sepet güncelleme
+                        Log.d("API", "Yemek başarıyla sepetten silindi.")
                     } else {
                         _hataMesaji.value = "Yemek sepetten silinemedi."
+                        Log.e("API", "Yemek sepetten silinemedi: ${response.message}")
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     _hataMesaji.value = "Sepetten silerken hata oluştu: ${e.message}"
+                    Log.e("API", "Sepetten silerken hata: ${e.message}")
                 }
             }
         }
@@ -172,4 +163,3 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
         _hataMesaji.value = null
     }
 }
-

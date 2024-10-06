@@ -13,7 +13,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.aydinkaya.saporiveloce.data.entity.Yemek
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun YemekListScreen(
@@ -40,3 +39,4 @@ fun YemekListScreen(
         }
     }
 }
+

@@ -1,34 +1,30 @@
 package com.aydinkaya.saporiveloce.views.home
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.aydinkaya.saporiveloce.data.entity.Yemek
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.foundation.clickable
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.aydinkaya.saporiveloce.viewmodel.YemekViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.aydinkaya.saporiveloce.data.entity.SepetYemek
+import com.aydinkaya.saporiveloce.data.entity.Yemek
+import com.aydinkaya.saporiveloce.viewmodel.YemekViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 @Composable
 fun YemekCard(
@@ -36,8 +32,6 @@ fun YemekCard(
     navController: NavController,
     viewModel: YemekViewModel
 ) {
-    val cardBackgroundColor = Color.White
-    val yemekAciklama = viewModel.yemekAciklamasiniGetir(yemek.yemek_id)
     val snackbarHostState = remember { SnackbarHostState() }
 
     Card(
@@ -45,9 +39,9 @@ fun YemekCard(
             .width(240.dp)
             .padding(8.dp)
             .clickable {
-                navController.navigate("productDetail/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}/$yemekAciklama")
+                navController.navigate("productDetail/${yemek.yemek_id}")
             },
-        colors = CardDefaults.cardColors(cardBackgroundColor),
+        colors = CardDefaults.cardColors(Color.White),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -76,8 +70,7 @@ fun YemekCard(
                     contentDescription = "Favorite",
                     modifier = Modifier
                         .size(24.dp)
-                        .padding(8.dp)
-                        .clickable { },
+                        .padding(8.dp),
                     tint = Color.Red
                 )
             }
@@ -116,13 +109,13 @@ fun YemekCard(
                         yemek_resim_adi = yemek.yemek_resim_adi,
                         yemek_fiyat = yemek.yemek_fiyat,
                         yemek_siparis_adet = 1,
-                        kullanici_adi = "current_user"
+                        kullanici_adi = "aydin"
                     )
-                    viewModel.sepeteYemekEkle(sepetYemek) // Pass sepetYemek to the ViewModel
+                    viewModel.sepeteYemekEkle(sepetYemek)
 
                     CoroutineScope(Dispatchers.Main).launch {
                         snackbarHostState.showSnackbar(
-                            message = "${yemek.yemek_adi} added to cart",
+                            message = "${yemek.yemek_adi} sepete eklendi",
                             duration = SnackbarDuration.Short
                         )
                     }
@@ -133,7 +126,7 @@ fun YemekCard(
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Add to cart", color = Color.Black)
+                Text(text = "Sepete Ekle", color = Color.Black)
             }
         }
     }

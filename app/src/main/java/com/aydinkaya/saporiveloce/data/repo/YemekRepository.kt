@@ -46,7 +46,8 @@ class YemekRepository @Inject constructor(private val yemekDataSource: YemekData
                 sepetYemek.kullanici_adi
             )
         } catch (e: Exception) {
-            CRUDCevap(success = 0, message = "Yemek sepete eklenemedi: ${e.message}")
+            val errorMessage = e.message ?: "Bilinmeyen hata"
+            CRUDCevap(success = 0, message = "Yemek sepete eklenemedi: $errorMessage")
         }
     }
 
@@ -54,14 +55,14 @@ class YemekRepository @Inject constructor(private val yemekDataSource: YemekData
         return try {
             yemekDataSource.sepettenYemekSil(sepetYemekId, kullaniciAdi)
         } catch (e: Exception) {
-            CRUDCevap(success = 0, message = "Yemek sepetten silinemedi: ${e.message}")
+            val errorMessage = e.message ?: "Bilinmeyen hata"
+            CRUDCevap(success = 0, message = "Yemek sepetten silinemedi: $errorMessage")
         }
     }
 
     suspend fun tumSepetYemekleriGetir(): List<SepetYemek> {
         return try {
-            val response = yemekDataSource.tumSepetYemekleriGetir()
-            response
+            yemekDataSource.tumSepetYemekleriGetir()
         } catch (e: Exception) {
             emptyList()
         }

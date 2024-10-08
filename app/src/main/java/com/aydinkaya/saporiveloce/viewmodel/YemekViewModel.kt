@@ -40,30 +40,31 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
 
     init {
         yemekleriGetir()
-        tumSepetYemekleriniGetir() // Sepeti başlangıçta yüklüyoruz
     }
 
-    fun sepeteYemekEkle(yemek: SepetYemek) {
+    fun sepeteYemekEkle(sepetYemek: SepetYemek) {
         val currentCartItems = _cartItems.value?.toMutableList() ?: mutableListOf()
-        val existingItem = currentCartItems.find { it.yemek_adi == yemek.yemek_adi }
+        val existingItem = currentCartItems.find { it.yemek_adi == sepetYemek.yemek_adi }
 
         if (existingItem != null) {
             val updatedItem = existingItem.copy(yemek_siparis_adet = existingItem.yemek_siparis_adet + 1)
             currentCartItems[currentCartItems.indexOf(existingItem)] = updatedItem
+            Log.d("SepetGüncelle", "${sepetYemek.yemek_adi} miktarı artırıldı, yeni adet: ${updatedItem.yemek_siparis_adet}")
         } else {
-            currentCartItems.add(yemek)
+            currentCartItems.add(sepetYemek)
+            Log.d("SepetEkle", "${sepetYemek.yemek_adi} sepete eklendi.")
         }
 
         _cartItems.value = currentCartItems
-        Log.d("YemekViewModel", "Sepet güncellendi: ${_cartItems.value?.size} öğe var.")
+        Log.d("SepetDurum", "Sepet güncellendi: ${_cartItems.value?.size} öğe var.")
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = repository.sepeteYemekEkle(yemek)
+                val response = repository.sepeteYemekEkle(sepetYemek)
                 withContext(Dispatchers.Main) {
                     if (response.success == 1) {
-                        Log.d("API", "Yemek başarıyla sepete eklendi: ${yemek.yemek_adi}")
-                        tumSepetYemekleriniGetir() // Sepet güncelleme
+                        Log.d("API", "${sepetYemek.yemek_adi} başarıyla sepete eklendi.")
+                        tumSepetYemekleriGetir()
                     } else {
                         _hataMesaji.value = "Yemek sepete eklenemedi."
                         Log.e("API", "Yemek sepete eklenemedi: ${response.message}")
@@ -78,22 +79,29 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
         }
     }
 
-    fun tumSepetYemekleriniGetir() {
+
+
+    fun tumSepetYemekleriGetir() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val sepetYemekler = repository.tumSepetYemekleriGetir()
                 withContext(Dispatchers.Main) {
-                    _cartItems.value = sepetYemekler
-                    Log.d("YemekViewModel", "Sepet verileri güncellendi: ${sepetYemekler.size} öğe var.")
+                    val currentCartItems = _cartItems.value?.toMutableList() ?: mutableListOf()
+                    currentCartItems.addAll(sepetYemekler)
+
+                    _cartItems.value = currentCartItems
+                    Log.d("SepetVerileri", "Sepet verileri başarıyla güncellendi: ${sepetYemekler.size} öğe var.")
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     _hataMesaji.value = "Sepet yüklenemedi: ${e.message}"
-                    Log.e("YemekViewModel", "Sepet yüklenemedi: ${e.message}")
+                    Log.e("SepetHata", "Sepet yüklenemedi: ${e.message}")
                 }
             }
         }
     }
+
+
 
     fun toplamFiyat(): Int {
         return _cartItems.value?.sumOf { it.yemek_fiyat * it.yemek_siparis_adet } ?: 0
@@ -134,7 +142,7 @@ open class YemekViewModel @Inject constructor(private val repository: YemekRepos
                 val response = repository.sepettenYemekSil(sepetYemek.sepet_yemek_id, sepetYemek.kullanici_adi)
                 withContext(Dispatchers.Main) {
                     if (response.success == 1) {
-                        tumSepetYemekleriniGetir() // Silindikten sonra sepet güncelleme
+                        tumSepetYemekleriGetir()
                         Log.d("API", "Yemek başarıyla sepetten silindi.")
                     } else {
                         _hataMesaji.value = "Yemek sepetten silinemedi."

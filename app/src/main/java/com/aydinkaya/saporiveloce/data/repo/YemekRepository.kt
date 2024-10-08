@@ -1,5 +1,6 @@
 package com.aydinkaya.saporiveloce.data.repo
 
+import android.util.Log
 import com.aydinkaya.saporiveloce.data.datasource.YemekDataSource
 import com.aydinkaya.saporiveloce.data.entity.CRUDCevap
 import com.aydinkaya.saporiveloce.data.entity.SepetYemek
@@ -28,43 +29,50 @@ class YemekRepository @Inject constructor(private val yemekDataSource: YemekData
     suspend fun tumYemekleriGetir(): List<Yemek> {
         return try {
             val response = yemekDataSource.tumYemekleriGetir()
-            response.yemekler.map { yemek ->
-                yemek.copy(yemek_aciklama = yemekAciklamalar[yemek.yemek_id] ?: "Açıklama yok")
-            }
+            Log.d("YemekRepository", "Tüm yemekler başarıyla alındı: ${response.yemekler.size} öğe")
+            response.yemekler
         } catch (e: Exception) {
+            Log.e("YemekRepository", "Yemekleri alırken hata oluştu: ${e.message}")
             emptyList()
         }
     }
 
     suspend fun sepeteYemekEkle(sepetYemek: SepetYemek): CRUDCevap {
         return try {
-            yemekDataSource.sepeteYemekEkle(
+            val response = yemekDataSource.sepeteYemekEkle(
                 sepetYemek.yemek_adi,
                 sepetYemek.yemek_resim_adi,
                 sepetYemek.yemek_fiyat,
                 sepetYemek.yemek_siparis_adet,
                 sepetYemek.kullanici_adi
             )
+            Log.d("YemekRepository", "${sepetYemek.yemek_adi} sepete eklendi.")
+            response
         } catch (e: Exception) {
-            val errorMessage = e.message ?: "Bilinmeyen hata"
-            CRUDCevap(success = 0, message = "Yemek sepete eklenemedi: $errorMessage")
-        }
-    }
-
-    suspend fun sepettenYemekSil(sepetYemekId: Int, kullaniciAdi: String): CRUDCevap {
-        return try {
-            yemekDataSource.sepettenYemekSil(sepetYemekId, kullaniciAdi)
-        } catch (e: Exception) {
-            val errorMessage = e.message ?: "Bilinmeyen hata"
-            CRUDCevap(success = 0, message = "Yemek sepetten silinemedi: $errorMessage")
+            Log.e("YemekRepository", "Sepete ekleme hatası: ${e.message}")
+            CRUDCevap(success = 0, message = "Yemek sepete eklenemedi: ${e.message}")
         }
     }
 
     suspend fun tumSepetYemekleriGetir(): List<SepetYemek> {
         return try {
-            yemekDataSource.tumSepetYemekleriGetir()
+            val response = yemekDataSource.tumSepetYemekleriGetir()
+            Log.d("YemekRepository", "Sepet verileri alındı: ${response.size} öğe")
+            response
         } catch (e: Exception) {
+            Log.e("YemekRepository", "Sepet verileri alınamadı: ${e.message}")
             emptyList()
+        }
+    }
+
+    suspend fun sepettenYemekSil(sepetYemekId: Int, kullaniciAdi: String): CRUDCevap {
+        return try {
+            val response = yemekDataSource.sepettenYemekSil(sepetYemekId, kullaniciAdi)
+            Log.d("YemekRepository", "Sepetten yemek başarıyla silindi.")
+            response
+        } catch (e: Exception) {
+            Log.e("YemekRepository", "Sepetten silme hatası: ${e.message}")
+            CRUDCevap(success = 0, message = "Yemek sepetten silinemedi: ${e.message}")
         }
     }
 }

@@ -91,6 +91,9 @@ dependencies {
     implementation (libs.ui)
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
+
+
 
 
 

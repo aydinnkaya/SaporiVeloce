@@ -3,6 +3,7 @@ package com.aydinkaya.saporiveloce.data.datasource
 import android.util.Log
 import com.aydinkaya.saporiveloce.data.entity.CRUDCevap
 import com.aydinkaya.saporiveloce.data.entity.SepetYemek
+import com.aydinkaya.saporiveloce.data.entity.SepetYemekResponse  // SepetYemekResponse modelini ekleyin
 import com.aydinkaya.saporiveloce.data.entity.YemekResponse
 import com.aydinkaya.saporiveloce.retrofit.YemekDao
 import kotlinx.coroutines.Dispatchers
@@ -69,8 +70,14 @@ class YemekDataSource @Inject constructor(private val yemekDao: YemekDao) {
         try {
             val response = yemekDao.tumSepetYemekleriGetir()
             if (response.isSuccessful) {
-                Log.d("YemekDataSource", "Sepet yemekleri başarıyla getirildi.")
-                response.body() ?: emptyList()
+                val sepetResponse = response.body()
+                if (sepetResponse != null && sepetResponse.success == 1) {
+                    Log.d("YemekDataSource", "Sepet yemekleri başarıyla getirildi.")
+                    sepetResponse.yemekler
+                } else {
+                    Log.e("YemekDataSource", "Sepet yemekleri getirilemedi, hata: ${response.code()}")
+                    emptyList()
+                }
             } else {
                 Log.e("YemekDataSource", "Sepet yemekleri getirilemedi, hata kodu: ${response.code()}")
                 emptyList()
@@ -80,5 +87,5 @@ class YemekDataSource @Inject constructor(private val yemekDao: YemekDao) {
             emptyList()
         }
     }
-}
 
+}

@@ -50,4 +50,7 @@ class HomeScreenViewModel @Inject constructor() : ViewModel() {
         )
     )
     val foodCards: StateFlow<List<FoodCardData>> = _foodCards
+
+
+
 }

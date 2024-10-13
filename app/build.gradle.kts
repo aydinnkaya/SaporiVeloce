@@ -93,6 +93,18 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
 
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    kapt ("com.github.bumptech.glide:compiler:4.15.1")
+
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
+
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.0")
+
+
+
+
 
 
 

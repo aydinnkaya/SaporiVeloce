@@ -24,8 +24,8 @@ fun CartAppBar(onBackClick: () -> Unit) {
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary, // For background color
-            titleContentColor = Color.White // For title color
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = Color.White
         )
     )
 }

@@ -1,5 +1,6 @@
 package com.aydinkaya.saporiveloce.views.bottomnavigationbar
-
+/*
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -15,7 +16,7 @@ import com.aydinkaya.saporiveloce.viewmodel.YemekViewModel
 import com.aydinkaya.saporiveloce.views.home.HomeScreen
 import com.aydinkaya.saporiveloce.views.home.ProfileScreen
 import com.aydinkaya.saporiveloce.views.productdetailscreen.ProductDetailScreen
-import com.aydinkaya.saporiveloce.views.shopping.CartScreen
+import com.aydinkaya.saporiveloce.views.shopping.CheckoutScreen
 
 @Composable
 fun NavigationStack() {
@@ -30,15 +31,19 @@ fun NavigationStack() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("home") {
+                Log.d("NavigationStack", "Ana sayfa başlatıldı")
                 val homeScreenViewModel = hiltViewModel<HomeScreenViewModel>()
                 val yemekViewModel = hiltViewModel<YemekViewModel>()
                 HomeScreen(navController = navController, viewModel = homeScreenViewModel, yemekViewModel = yemekViewModel)
             }
-            composable("cart") {
+            composable("checkout") {
+                Log.d("NavigationStack", "Checkout sayfası başlatıldı")
                 val viewModel = hiltViewModel<YemekViewModel>()
-                CartScreen(viewModel = viewModel, navController = navController)
+                CheckoutScreen(viewModel = viewModel)
             }
+
             composable("profile") {
+                Log.d("NavigationStack", "Profil sayfası başlatıldı")
                 ProfileScreen()
             }
 
@@ -58,6 +63,7 @@ fun NavigationStack() {
                 val yemekResimAdi = backStackEntry.arguments?.getString("yemekResimAdi") ?: ""
                 val yemekAciklama = backStackEntry.arguments?.getString("yemekAciklama") ?: ""
 
+                Log.d("NavigationStack", "Ürün detayı sayfası açıldı: $yemekAdi")
                 ProductDetailScreen(
                     navController = navController,
                     yemekId = yemekId,
@@ -73,3 +79,6 @@ fun NavigationStack() {
         }
     }
 }
+
+
+ */

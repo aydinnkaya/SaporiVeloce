@@ -1,5 +1,6 @@
 package com.aydinkaya.saporiveloce.views.shopping
 
+/*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,6 +26,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.font.FontWeight
 import com.aydinkaya.saporiveloce.data.entity.SepetYemek
 
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
@@ -33,7 +35,7 @@ fun CartScreen(
 ) {
     // LiveData'yı observeAsState ile dinliyoruz
     val cartItems by viewModel.cartItems.observeAsState(emptyList())
-    val toplamFiyat by remember { derivedStateOf { viewModel.toplamFiyat() } }
+    val toplamFiyat by viewModel.toplamFiyat.observeAsState(0.0)
 
     Scaffold(
         topBar = {
@@ -139,6 +141,8 @@ fun CartItem(
     }
 }
 
+
+ */
 
 
 
@@ -311,5 +315,8 @@ fun CartItem(imageRes: String, title: String, price: Int, quantity: Int, onQuant
         }
     }
 }
+
+ */
+
 
  */

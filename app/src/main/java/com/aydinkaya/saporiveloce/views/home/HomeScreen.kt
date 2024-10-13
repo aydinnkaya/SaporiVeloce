@@ -1,5 +1,6 @@
 package com.aydinkaya.saporiveloce.views.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,10 +12,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,34 +32,41 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aydinkaya.saporiveloce.R
-import com.aydinkaya.saporiveloce.data.entity.Yemek
+import com.aydinkaya.saporiveloce.viewmodel.FavoriScreenViewModel
 import com.aydinkaya.saporiveloce.viewmodel.FoodCardData
 import com.aydinkaya.saporiveloce.viewmodel.HomeScreenViewModel
-import com.aydinkaya.saporiveloce.viewmodel.YemekViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.aydinkaya.saporiveloce.viewmodel.YemekKayitViewModel
+import com.example.graduationproject.views.viewmodel.HomeViewModel
+
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = hiltViewModel(), yemekViewModel: YemekViewModel = hiltViewModel()   ) {
+fun HomeScreen(navController: NavController,
+               viewModel: HomeScreenViewModel = hiltViewModel(),
+               homeViewModel: HomeViewModel= hiltViewModel(),
+               yemekKayitViewModel: YemekKayitViewModel= hiltViewModel(),
+               favoriScreenViewModel: FavoriScreenViewModel= hiltViewModel()
+) {
     val foodCards by viewModel.foodCards.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val foodItems by viewModel.foodItems.collectAsState()
     val restaurants by viewModel.restaurants.collectAsState()
-    val yemekList by yemekViewModel.yemekListesi.observeAsState(emptyList())
+    val yemeklerListesi by homeViewModel.yemeklerListesi.observeAsState(emptyList())
+
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            WelcomeAndLocation()
+            WelcomeAndLocation(navController)
         }
 
         item {
@@ -86,7 +96,9 @@ fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = hi
         }
 
         item {
-            YemekListScreen(navController = navController, yemekList = yemekList, viewModel = yemekViewModel)
+
+            YemekListScreen(navController = navController, yemekList = yemeklerListesi,yemekKayitViewModel,favoriScreenViewModel)
+
         }
 
         /*
@@ -111,11 +123,16 @@ fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = hi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WelcomeAndLocation() {
+fun WelcomeAndLocation(navController: NavController) {
     val locations = listOf("Cairo, Egypt", "New York, USA", "London, UK", "Tokyo, Japan")
     var selectedLocation by remember { mutableStateOf(locations[0]) }
     var expanded by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+
+    // Focus request only after composition has been applied
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus() // Odak talebini burada yapıyoruz, kompozisyon tamamlandığında
+    }
 
     Row(
         modifier = Modifier
@@ -134,21 +151,28 @@ fun WelcomeAndLocation() {
 
             ExposedDropdownMenuBox(
                 expanded = expanded,
-                onExpandedChange = { expanded = it },
-                modifier = Modifier.focusRequester(focusRequester) // focusRequester burada ekleniyor
+                onExpandedChange = { expanded = !expanded }
             ) {
                 Row(
                     modifier = Modifier
                         .clickable {
-                            expanded = true
-                            focusRequester.requestFocus() // Odak isteği burada
+                            expanded = !expanded
+                            focusRequester.requestFocus()  // Odak talebini burada tetikleme
                         }
-                        .padding(4.dp),
+                        .padding(4.dp)
+                        .focusRequester(focusRequester), // Modifier'a odak talebini ekleme
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "Dropdown Arrow")
+                    Text(
+                        text = selectedLocation,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = selectedLocation)
+                    Icon(
+                        imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.ArrowDropDown,
+                        contentDescription = null
+                    )
                 }
 
                 ExposedDropdownMenu(
@@ -183,10 +207,14 @@ fun WelcomeAndLocation() {
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
+                    .clickable {
+                        navController.navigate("hesabimSayfa")
+                    }
             )
         }
     }
 }
+
 
 
 @Composable
@@ -281,3 +309,5 @@ fun SearchBar() {
         shape = RoundedCornerShape(16.dp)
     )
 }
+
+

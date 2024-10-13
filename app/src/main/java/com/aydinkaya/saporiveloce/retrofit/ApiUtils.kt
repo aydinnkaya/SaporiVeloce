@@ -1,14 +1,11 @@
-package com.aydinkaya.saporiveloce.retrofit
+package com.example.graduationproject.retrofit
 
-/*
 class ApiUtils {
     companion object {
-        const val BASE_URL = "http://kasimadalan.pe.hu/yemekler/"
+        val BASE_URL = "http://kasimadalan.pe.hu/"
 
-        fun getYemekDao(): YemekDao {
-            return RetrofitClient.getClient(BASE_URL).create(YemekDao::class.java)
+        fun getYemeklerDao() : YemeklerDao {
+            return RetrofitClient.getClient(BASE_URL).create(YemeklerDao::class.java)
         }
     }
 }
-
- */

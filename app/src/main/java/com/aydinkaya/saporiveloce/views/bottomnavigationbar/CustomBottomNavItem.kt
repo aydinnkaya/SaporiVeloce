@@ -12,10 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.*
+
 
 @Composable
 fun CustomBottomNavItem(
-    screen: Screen,
+    navigateScreens: NavigateScreens,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -24,22 +26,15 @@ fun CustomBottomNavItem(
     Box(
         modifier = Modifier
             .size(60.dp)
-            .background(Color.Transparent)
-            .clickable(onClick = onClick),
+            .clip(CircleShape)
+            .background(if (isSelected) Color.Black else Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (isSelected) {
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black)
-            )
-        }
-
         Icon(
-            imageVector = screen.icon,
-            contentDescription = screen.title,
+            imageVector = navigateScreens.icon,
+            contentDescription = navigateScreens.title,
             tint = iconColor,
             modifier = Modifier.size(if (isSelected) 32.dp else 24.dp)
         )

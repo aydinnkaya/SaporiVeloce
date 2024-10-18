@@ -13,7 +13,6 @@ import com.aydinkaya.saporiveloce.viewmodel.SepetViewModel
 import com.aydinkaya.saporiveloce.viewmodel.YemekKayitViewModel
 import com.example.graduationproject.views.viewmodel.HomeViewModel
 
-
 @Composable
 fun BottomBarSayfa(
     navController: NavHostController,
@@ -33,12 +32,14 @@ fun BottomBarSayfa(
                 .padding(paddingValues),
             verticalArrangement = Arrangement.Top
         ) {
+            // This is where you'd show the content for the current screen
+            // based on the current route in the navController.
             NavigationGraph(
                 navController = navController,
                 homeViewModel = homeViewModel,
                 yemekKayitViewModel = yemekKayitViewModel,
-                favoriScreenViewModel = favoriScreenViewModel,
-                sepetViewModel = sepetViewModel
+                sepetViewModel = sepetViewModel,
+                favoriScreenViewModel = favoriScreenViewModel
             )
         }
     }

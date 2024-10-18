@@ -43,9 +43,9 @@ class HomeScreenViewModel @Inject constructor() : ViewModel() {
 
     private val _foodCards = MutableStateFlow(
         listOf(
-            FoodCardData("Burger", "Special offers just for you", "Up to 60%", R.drawable.burger2),
+            FoodCardData("Burger", "Special offers just for you", "Up to 60%", R.drawable.burger3d1),
             FoodCardData("Pizza", "Enjoy delicious pizza", "Up to 40%", R.drawable.pizza),
-            FoodCardData("Lahmacun", "Authentic flavors", "Up to 30%", R.drawable.sandwich),
+            FoodCardData("Sandwich", "Authentic flavors", "Up to 30%", R.drawable.sandwich),
             FoodCardData("Dessert", "Satisfy your sweet tooth", "Up to 50%", R.drawable.baklava)
         )
     )

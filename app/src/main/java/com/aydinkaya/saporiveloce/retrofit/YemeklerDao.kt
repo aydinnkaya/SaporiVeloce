@@ -32,8 +32,4 @@ interface YemeklerDao {
     @FormUrlEncoded
     suspend fun sepettekiYemekleriGetir(@Field("kullanici_adi") kullanici_adi: String): SepettekiYemeklerCevap
 
-
-
-
-
 }

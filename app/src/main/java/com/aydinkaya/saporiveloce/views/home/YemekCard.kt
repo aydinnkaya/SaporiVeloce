@@ -2,6 +2,7 @@ package com.aydinkaya.saporiveloce.views.home
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,7 +31,7 @@ import com.aydinkaya.saporiveloce.viewmodel.YemekKayitViewModel
 @Composable
 fun YemekCard(
     navController: NavController,
-    yemek: Yemekler, // Assuming 'Yemekler' is a data class for the food items
+    yemek: Yemekler,
     yemekKayitViewModel: YemekKayitViewModel,
     favoriScreenViewModel: FavoriScreenViewModel
 ) {
@@ -48,11 +51,11 @@ fun YemekCard(
             .padding(8.dp)
             .clickable {
                 Log.d("YemekCard", "Detay sayfasına yönlendiriliyor: ${yemek.yemek_adi}")
-                //navController.navigate("detaySayfa/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}")
                 navController.navigate("productDetail/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}")
 
             },
-        colors = CardDefaults.cardColors(Color.White),
+        colors = CardDefaults.cardColors(Color(0xFFFFC107)),
+        //colors = CardDefaults.cardColors(Color(0xFFFFF479))
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -91,21 +94,10 @@ fun YemekCard(
                     Icon(
                         painter = painterResource(id = if (isFavori) R.drawable.unfavori else R.drawable.favori),
                         contentDescription = "Favorite",
-                        tint = Color(0xFFFF9800)
+                        tint = Color.White
                     )
                 }
-                /*
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "Favorite",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(8.dp),
-                    tint =Color(0xFFFF9800)
 
-                )
-
-                 */
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -123,21 +115,36 @@ fun YemekCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "${yemek.yemek_fiyat}₺",
+                text = "$${yemek.yemek_fiyat}",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color(0xFFFF9800)
+                    color = Color.White
                 ),
                 textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = {
-                    Log.d("YemekCard", "Butona tıklandı, yemek sepete eklenecek: ${yemek.yemek_adi}")
-
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .shadow(16.dp, shape = RoundedCornerShape(10.dp))
+                    .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(Color(0xFFFF6D00), Color.Transparent),
+                            radius = 300f
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .padding(8.dp)
+            ) {
+                Button(
+                    onClick = {
+                        Log.d(
+                            "YemekCard",
+                            "Butona tıklandı, yemek sepete eklenecek: ${yemek.yemek_adi}"
+                        )
                         yemekKayitViewModel.kaydet(
                             yemek.yemek_adi,
                             yemek.yemek_resim_adi,
@@ -145,139 +152,20 @@ fun YemekCard(
                             quantity
                         )
                         showAnimation = true
-
-
-
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFF9800)
-                ),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Sepete Ekle", color = Color.Black)
-            }
-        }
-    }
-}
-
-
-
-/*
-
-@Composable
-fun YemekCard(
-    yemek: Yemek,
-    navController: NavController,
-    viewModel: YemekViewModel = hiltViewModel()
-
-) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-
-    Card(
-        modifier = Modifier
-            .width(240.dp)
-            .padding(8.dp)
-            .clickable {
-                Log.d("YemekCard", "Detay sayfasına yönlendiriliyor: ${yemek.yemek_adi}")
-                navController.navigate("productDetail/${yemek.yemek_id}/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}/Açıklama")
-            },
-        colors = CardDefaults.cardColors(Color.White),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                contentAlignment = Alignment.TopEnd
-            ) {
-                Image(
-                    painter = rememberAsyncImagePainter("http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}"),
-                    contentDescription = yemek.yemek_adi,
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .size(180.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6D00)),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Text(text = "Add to cart", color = Color.White)
+                }
 
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "Favorite",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(8.dp),
-                    tint = Color.Red
-                )
+
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = yemek.yemek_adi,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                ),
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "${yemek.yemek_fiyat}₺",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color(0xFFFF9800)
-                ),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = {
-                    Log.d("YemekCard", "Butona tıklandı, yemek sepete eklenecek: ${yemek.yemek_adi}")
-
-                    val sepetYemek = SepetYemek(
-                        sepet_yemek_id = 0,
-                        yemek_adi = yemek.yemek_adi,
-                        yemek_resim_adi = yemek.yemek_resim_adi,
-                        yemek_fiyat = yemek.yemek_fiyat,
-                        yemek_siparis_adet = 1,
-                        kullanici_adi = "realicon"
-                    )
-
-                    viewModel.sepeteYemekEkle(sepetYemek)
-
-                    Log.d("YemekCard", "${yemek.yemek_adi} sepete ekleniyor...")
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "${yemek.yemek_adi} sepete eklendi",
-                            duration = SnackbarDuration.Short
-                        )
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFF9800)
-                ),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Sepete Ekle", color = Color.Black)
-            }
         }
     }
 }
-
-
-
- */

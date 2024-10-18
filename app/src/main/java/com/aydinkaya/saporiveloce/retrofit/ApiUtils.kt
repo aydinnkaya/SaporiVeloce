@@ -1,5 +1,7 @@
 package com.example.graduationproject.retrofit
 
+
+
 class ApiUtils {
     companion object {
         val BASE_URL = "http://kasimadalan.pe.hu/"

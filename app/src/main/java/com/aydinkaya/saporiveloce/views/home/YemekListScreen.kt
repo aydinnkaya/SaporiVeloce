@@ -28,7 +28,7 @@ fun YemekListScreen(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
-    )  {
+    ) {
         items(yemekList.size) { index ->
             val yemek = yemekList[index]
             Log.d("YemekListScreen", "Yemek kartı oluşturuluyor: ${yemek.yemek_adi}")
@@ -41,10 +41,6 @@ fun YemekListScreen(
         }
     }
 }
-
-
-
-
 
 
 /*

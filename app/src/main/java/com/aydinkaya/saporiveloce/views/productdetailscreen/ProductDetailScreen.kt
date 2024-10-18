@@ -89,7 +89,7 @@ fun ProductDetailScreen(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Back",
-                        tint = Color.Black
+                        tint = Color.White
                     )
                 }
 
@@ -110,11 +110,11 @@ fun ProductDetailScreen(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .offset((-1).dp, 4.dp),
-                            containerColor = Color.DarkGray
+                            containerColor = Color.White
                         ) {
                             Text(
                                 text = cartItemCount.toString(),
-                                color = Color.White,
+                                color = Color.Black,
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
@@ -167,7 +167,7 @@ fun ProductDetailScreen(
             ) {
                 Text(
                     text = yemekAdi,
-                    color = Color.Black,
+                    color = Color.White,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
@@ -200,23 +200,23 @@ fun ProductDetailScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.minusred),
                             contentDescription = "Decrease Quantity",
-                            tint = Color.Black,
+                            tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                    Text(text = "$quantity", color = Color.Black)
+                    Text(text = "$quantity", color = Color.White)
                     IconButton(onClick = { quantity++ }) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Increase Quantity",
-                            tint = Color.Black
+                            tint = Color.White
                         )
                     }
                 }
 
                 Text(
                     text = "₺$totalPrice",
-                    color = Color.Black,
+                    color = Color.White,
                     style = MaterialTheme.typography.titleMedium
                 )
             }

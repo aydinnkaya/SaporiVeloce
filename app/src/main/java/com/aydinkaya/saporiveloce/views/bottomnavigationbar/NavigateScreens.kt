@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class NavigateScreens(val route: String, val title: String, val icon: ImageVector) {
     object Home : NavigateScreens("home", "Home", Icons.Filled.Home)
 
-    object Checkout : NavigateScreens("sepetsayfa", "Sepetim", Icons.Default.ShoppingCart)
+    object Checkout : NavigateScreens("CheckoutScreen", "Checkout", Icons.Default.ShoppingCart)
 
     object Favorites : NavigateScreens("favorisayfa", "Favorilerim", Icons.Default.Favorite)
 

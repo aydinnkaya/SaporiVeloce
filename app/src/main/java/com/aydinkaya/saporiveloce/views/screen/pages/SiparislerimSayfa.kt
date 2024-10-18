@@ -37,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.aydinkaya.saporiveloce.R
-import com.aydinkaya.saporiveloce.ui.theme.Appbarcolor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,8 +45,7 @@ fun SiparislerimSayfa(navController: NavController) {
     Scaffold(
         topBar = {
             Surface(
-                shape = RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp),
-                color = Appbarcolor
+
             ) {
                 CenterAlignedTopAppBar(
                     title = { Text(text = "Siparişlerim") },
@@ -61,7 +59,6 @@ fun SiparislerimSayfa(navController: NavController) {
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Appbarcolor,
                         titleContentColor = Color.White
                     )
                 )
@@ -91,12 +88,11 @@ fun SiparislerimSayfa(navController: NavController) {
                             Text(text = "24 Eylül 2024")
                             Text(
                                 text = "Toplam: 500.00 TL",
-                                color = Appbarcolor
 
                             )
                         }
                         TextButton(onClick ={}) {
-                            Text(text = "Detaylar", color = Appbarcolor)
+                            Text(text = "Detaylar", )
                         }
                     }
 
@@ -123,7 +119,6 @@ fun SiparislerimSayfa(navController: NavController) {
                         Button(
                             onClick = {},
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Appbarcolor,
                                 contentColor = Color.White
                             ),
                             shape = RoundedCornerShape(8.dp)

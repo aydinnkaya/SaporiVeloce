@@ -46,11 +46,12 @@ import com.example.graduationproject.views.viewmodel.HomeViewModel
 
 
 @Composable
-fun HomeScreen(navController: NavController,
-               viewModel: HomeScreenViewModel = hiltViewModel(),
-               homeViewModel: HomeViewModel= hiltViewModel(),
-               yemekKayitViewModel: YemekKayitViewModel= hiltViewModel(),
-               favoriScreenViewModel: FavoriScreenViewModel= hiltViewModel()
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    yemekKayitViewModel: YemekKayitViewModel = hiltViewModel(),
+    favoriScreenViewModel: FavoriScreenViewModel = hiltViewModel()
 ) {
     val foodCards by viewModel.foodCards.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -97,9 +98,15 @@ fun HomeScreen(navController: NavController,
 
         item {
 
-            YemekListScreen(navController = navController, yemekList = yemeklerListesi,yemekKayitViewModel,favoriScreenViewModel)
+            YemekListScreen(
+                navController = navController,
+                yemekList = yemeklerListesi,
+                yemekKayitViewModel,
+                favoriScreenViewModel
+            )
 
         }
+
 
         /*
         item {
@@ -119,195 +126,4 @@ fun HomeScreen(navController: NavController,
          */
     }
 }
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun WelcomeAndLocation(navController: NavController) {
-    val locations = listOf("Cairo, Egypt", "New York, USA", "London, UK", "Tokyo, Japan")
-    var selectedLocation by remember { mutableStateOf(locations[0]) }
-    var expanded by remember { mutableStateOf(false) }
-    val focusRequester = remember { FocusRequester() }
-
-    // Focus request only after composition has been applied
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus() // Odak talebini burada yapıyoruz, kompozisyon tamamlandığında
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column {
-            Text(
-                text = "Welcome, User",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.Green
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .clickable {
-                            expanded = !expanded
-                            focusRequester.requestFocus()  // Odak talebini burada tetikleme
-                        }
-                        .padding(4.dp)
-                        .focusRequester(focusRequester), // Modifier'a odak talebini ekleme
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = selectedLocation,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.ArrowDropDown,
-                        contentDescription = null
-                    )
-                }
-
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    locations.forEach { location ->
-                        DropdownMenuItem(
-                            text = { Text(location) },
-                            onClick = {
-                                selectedLocation = location
-                                expanded = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Notifications,
-                contentDescription = "Notification Icon",
-                modifier = Modifier.size(24.dp)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.aydin_kaya_photo),
-                contentDescription = "Profile Image",
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(CircleShape)
-                    .clickable {
-                        navController.navigate("hesabimSayfa")
-                    }
-            )
-        }
-    }
-}
-
-
-
-@Composable
-fun FoodCard(card: FoodCardData) {
-    val cardBackgroundColor = Color(0xFFE7A33E)
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp)
-            .padding(8.dp),
-        colors = CardDefaults.cardColors(cardBackgroundColor),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(text = card.title, style = MaterialTheme.typography.titleMedium, color = Color.Black)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = card.description, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = card.discount, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-            }
-
-            Image(
-                painter = painterResource(id = card.imageRes),
-                contentDescription = card.title,
-                modifier = Modifier.size(100.dp),
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
-}
-
-
-@Composable
-fun RestaurantCard(restaurant: String) {
-    Card(
-        modifier = Modifier
-            .size(120.dp)
-            .clickable { }
-    ) {
-        Column {
-            Image(painter = painterResource(id = R.drawable.sandwich), contentDescription = restaurant)
-            Text(text = restaurant, style = MaterialTheme.typography.bodyLarge)
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchBar() {
-    val searchText = remember { mutableStateOf(TextFieldValue("")) }
-
-    OutlinedTextField(
-        value = searchText.value,
-        onValueChange = { searchText.value = it },
-        placeholder = { Text(text = "Search") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Search Icon",
-                tint = Color.Gray
-            )
-        },
-        trailingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Info,
-                contentDescription = "Microphone Icon",
-                tint = Color.Gray
-            )
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = Color(0xFFF2F4F5),
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent
-        ),
-        shape = RoundedCornerShape(16.dp)
-    )
-}
-
 

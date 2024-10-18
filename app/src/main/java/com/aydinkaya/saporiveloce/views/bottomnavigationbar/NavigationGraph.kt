@@ -11,12 +11,13 @@ import com.aydinkaya.saporiveloce.viewmodel.FavoriScreenViewModel
 import com.aydinkaya.saporiveloce.viewmodel.HomeScreenViewModel
 import com.aydinkaya.saporiveloce.viewmodel.SepetViewModel
 import com.aydinkaya.saporiveloce.viewmodel.YemekKayitViewModel
-import com.aydinkaya.saporiveloce.views.favoriler.FavorilerScreen
+import com.aydinkaya.saporiveloce.views.favorites.FavorilerScreen
 import com.aydinkaya.saporiveloce.views.home.HomeScreen
 import com.aydinkaya.saporiveloce.views.productdetailscreen.ProductDetailScreen
-import com.aydinkaya.saporiveloce.views.screen.pages.HesabimSayfa
-import com.aydinkaya.saporiveloce.views.screen.pages.SepetSayfa
+import com.aydinkaya.saporiveloce.views.profile.ProfileScreen
 import com.aydinkaya.saporiveloce.views.screen.pages.SiparislerimSayfa
+import com.aydinkaya.saporiveloce.views.shopping.CheckoutScreen
+import com.aydinkaya.saporiveloce.views.shopping.OrderDetailsScreen
 import com.example.graduationproject.views.viewmodel.HomeViewModel
 
 @Composable
@@ -29,8 +30,6 @@ fun NavigationGraph(
 ) {
     NavHost(navController = navController, startDestination = "home") {
 
-
-
         composable("home") {
             val homeScreenViewModel = hiltViewModel<HomeScreenViewModel>()
             HomeScreen(
@@ -42,8 +41,8 @@ fun NavigationGraph(
             )
         }
 
-        composable("sepetsayfa") {
-            SepetSayfa(navController, sepetViewModel)
+        composable("CheckoutScreen") {
+            CheckoutScreen(navController, sepetViewModel)
         }
 
         composable(
@@ -71,12 +70,30 @@ fun NavigationGraph(
             FavorilerScreen(navController, favoriScreenViewModel, yemekKayitViewModel,onBackPress = { navController.popBackStack() })
         }
 
-        composable("hesabimSayfa") {
-            HesabimSayfa(navController)
+        composable("profile") {
+            ProfileScreen(navController = navController)
         }
 
         composable("siparislerimsayfa") {
             SiparislerimSayfa(navController)
         }
+
+
+        composable(
+            "orderDetailsScreen/{totalPrice}",
+            arguments = listOf(
+                navArgument("totalPrice") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val totalPrice = backStackEntry.arguments?.getString("totalPrice") ?: ""
+
+            OrderDetailsScreen(
+                navController = navController,
+                totalPrice = totalPrice
+            )
+        }
+
+
+
     }
 }

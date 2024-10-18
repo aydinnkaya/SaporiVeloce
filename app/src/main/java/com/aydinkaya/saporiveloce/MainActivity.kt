@@ -24,13 +24,11 @@ class MainActivity : ComponentActivity() {
 
             setContent {
                 SaporiVeloceTheme {
-
                     val navController = rememberNavController()
                     val homeViewModel: HomeViewModel = hiltViewModel()
                     val yemekKayitViewModel: YemekKayitViewModel = hiltViewModel()
                     val sepetViewModel: SepetViewModel = hiltViewModel()
                     val favoriScreenViewModel: FavoriScreenViewModel = hiltViewModel()
-
                     BottomBarSayfa(
                         navController = navController,
                         homeViewModel = homeViewModel,
@@ -41,12 +39,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            /*
-            SaporiVeloceTheme {
-               NavigationStack()
-            }
-
-             */
         }
     }
 }
